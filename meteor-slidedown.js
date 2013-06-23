@@ -1,7 +1,42 @@
 // Collection is shared between client and server
-// var Decks = new Meteor.Collection('Decks');
+var Decks = new Meteor.Collection('Decks');
 
 if (Meteor.isClient) {
+  
+  var path = getPath();
+  
+  if (path && (path[0] === 'edit' || path[0] === 'show')){
+    Session.set('mode', path[0]);
+
+    var deckId = path[1];
+    Session.set('deckId', deckId);
+
+    console.log('Loading', deckId);
+
+    Meteor.startup(function () {
+      $('body').addClass(path[0]);
+    })
+
+  } else {
+    // Create new...
+
+    Decks.insert({markdown:'Talk Title\n=========='}, function(err, deckId){
+      Session.set('deckId', deckId);
+      setPath(deckId, '/edit/'+ deckId);
+    });
+    console.log('Creating new deck');
+  }
+
+  Deps.autorun(function(){
+    var deckId = Session.get('deckId');
+    Meteor.subscribe('oneDeck', deckId, function(){
+      console.log('Subcribed to oneDeck', Decks.find().fetch());
+      if ($('#src').val() === ''){
+        $('#src').val(getCurrentDeck());
+      }
+    });
+  });
+
   Template.preview.content = function () {
     return getCurrentDeck();
   };
@@ -13,7 +48,7 @@ if (Meteor.isClient) {
 
   Template.editor.events({
     'keyup #src' : function (event) {
-      // console.log('Keydown in #src', event.currentTarget.value);
+      console.log('Keydown in #src', event.currentTarget.value);
       setCurrentDeck(event.currentTarget.value);
     }
   });
@@ -55,12 +90,20 @@ What's all the fuss about?
 
 // temp helper, we're gonna replace session with a shared collection later
 function getCurrentDeck () {
-  return Session.get('src');
-}  
-function setCurrentDeck (src){
-  Session.set('src', src);
+  // return Session.get('src');
+  var deck = Decks.findOne();
+  if (deck){
+    return deck.markdown;  
+  }
 }
 
+function setCurrentDeck (src){
+  var deck = Decks.findOne();
+  console.log('Setting deck', src, deck)
+  if (deck){
+    Decks.update({_id: deck._id}, {markdown: src});
+  }
+}
 
 function getPath() {
   var path = window.location.pathname;
@@ -89,6 +132,10 @@ function setPath(name, path) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
+  });
+
+  Meteor.publish('oneDeck', function(deckId){
+    return Decks.find(deckId);
   });
 }
 
