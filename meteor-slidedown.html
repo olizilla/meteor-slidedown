@@ -1,0 +1,23 @@
+<head>
+  <title>meteor-slidedown</title>
+</head>
+
+<body>
+	<h1>Slide Down - Turning markdown into slideshows</h1>
+	<div class="preview">
+		{{> preview}}
+	</div>
+	{{> editor}}
+</body>
+
+<template name="editor">
+  <textarea id="src"></textarea>
+</template>
+
+<template name="preview">
+	<div class="deck">
+  	{{#markdown}}
+  		{{{content}}}
+  	{{/markdown}}
+	</div>
+</template>
