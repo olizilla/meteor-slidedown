@@ -24,11 +24,11 @@ h1{
 	font-size: 1.4em;
 }
 
-#src, .preview {
+.src, .preview {
 	height: 90%
 }
 
-#src {
+.src {
 	width: 800px;
 	height: 626px;
 	font-size: 1.2em;
@@ -71,7 +71,7 @@ h1{
 	background: #000;
 }
 .show > h1,
-.show #src {
+.show .src {
 	display: none;
 }
 .show .preview {

@@ -31,9 +31,9 @@ if (Meteor.isClient) {
     var deckId = Session.get('deckId');
     Meteor.subscribe('oneDeck', deckId, function(){
       console.log('Subcribed to oneDeck', Decks.find().fetch());
-      if ($('#src').val() === ''){
-        $('#src').val(getCurrentDeck());
-      }
+      // if ($('.src').val() === ''){
+      //   $('.src').val(getCurrentDeck());
+      // }
     });
   });
 
@@ -47,11 +47,15 @@ if (Meteor.isClient) {
   };
 
   Template.editor.events({
-    'keyup #src' : function (event) {
-      console.log('Keydown in #src', event.currentTarget.value);
+    'keyup .src' : function (event) {
+      console.log('Keydown in .src', event.currentTarget.value);
       setCurrentDeck(event.currentTarget.value);
     }
   });
+
+  Template.editor.value = function(){
+    return getCurrentDeck()
+  }
 }
 
 // DO magic... we need to eval the markdown, find h1, h2, and add section elements around them...
