@@ -51,15 +51,16 @@ if (Meteor.isClient) {
   //   console.log('Got userData', Meteor.user());
   // });
 
-  Template.preview.content = function () {
+  Template.deck.content = function () {
     return getCurrentDeck();
   };
 
-  Template.preview.rendered = function () {
+  Template.deck.rendered = function () {
     // console.log('Rendered', this);
     addSections(this.firstNode);
     
-    if ($('body').hasClass('show')) {
+    if ($('body').hasClass('show') && Decks.findOne()) {
+      console.log('Creating stack');
       createStack();
     }
   };

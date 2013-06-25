@@ -1,22 +1,21 @@
 /* CSS declarations go here */
 
-html, body{
-	margin: 0;
-	padding: 0;
-	height: 100%;
+/* cusomise for your talk */
+.deck .slide{
+	font-family: Futura;
+	font-size: 5em;
+	background: #EEE;
+	color: #222;
 }
+/* ---------------------- */
 
-html{
-	background: #555;
-	color: #EEE;
-}
-
-body{
+body.edit{
 	padding: 0 20px 0 20px;
 	margin:0 auto;
 	font-family: Futura;
+	background: #555;
+	color: #EEE;
 }
-
 h1, h2 {
 	margin: 10px 0;
 }
@@ -31,26 +30,27 @@ h1{
 .src, .preview {
 	height: 90%
 }
-
+.src, .edit .deck {
+	height: 626px;
+}
 .src {
 	display: none;
 	width: 800px;
-	height: 626px;
 	font-size: 1.6em;
-	font-family: monospace;
+	font-family: courier, monospace;
 }
 .edit .src {
 	display: inline-block;
 }
-.preview {
+.edit .deck {
 	width: 300px;
 	display: inline-block;
 	vertical-align: top;
 	margin-right: 20px;
 	overflow-y:scroll;
 }
-
-.deck .slide {
+.edit .slide {
+	font-size: 1em;
 	display: inline-block;
 	margin: 0 0 20px;
 	padding: 10px;
@@ -58,40 +58,22 @@ h1{
 	height: 180px;
 	border-radius:3px;
 	box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-	background: #EEE;
-	background-size: 100% 100%;
-	color:#333;
 }
-
-.slide h1 {
+.edit .slide h1 {
 	text-align: center;
 	font-size: 3em;
 }
-.slide img{
+.edit .slide img{
 	max-width: 100%;
 }
-.slide.image p{
-	color:white;
-}
 
-.show{
-	padding: 0;
-	background: #000;
-}
-.show > h1,
+.show > header,
 .show .src {
 	display: none;
 }
-.show .preview {
-	width: 100%;
+.deck .slide {
+	background-size: 100% 100%;
 }
-.show .slide {
-	width: 99%;
-	height: 680px;
-}
-/*.show .slide h1 {
-	font-size: 6em;
-}*/
-.show .slide {
-	font-size: 4em;
+.slide.image p{
+	color:white;
 }

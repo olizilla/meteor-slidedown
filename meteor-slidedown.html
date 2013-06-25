@@ -2,23 +2,22 @@
   <title>meteor-slidedown</title>
 </head>
 <body>
-	<header>
-		{{loginButtons}}
-	</header>
-	<div class="preview">
-		{{> preview}}
-	</div>
-	{{> editor}}
+  <header>
+    {{loginButtons}}
+    <h1>Slide Down - Slideshows from markdown</h1>
+  </header>
+  {{> deck}}
+  {{> editor}}
 </body>
 
 <template name="editor">
   <textarea class="src" id="src">{{value}}</textarea>
 </template>
 
-<template name="preview">
-	<div class="deck">
-  	{{#markdown}}
-  		{{{content}}}
-  	{{/markdown}}
-	</div>
+<template name="deck">
+  <div class="deck">
+    {{#markdown}}
+    {{{content}}}
+    {{/markdown}}
+  </div>
 </template>
