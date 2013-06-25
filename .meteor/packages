@@ -7,3 +7,7 @@ insecure
 preserve-inputs
 showdown
 jquery
+accounts-github
+accounts-ui
+accounts-base
+d3
