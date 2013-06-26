@@ -19,6 +19,10 @@ if (Meteor.isClient) {
 
   initAccounts();
 
+  Meteor.subscribe('userData', function(){
+    console.log('Got userData', Meteor.user());
+  });
+
   var routes = [
     {name: 'home', fn: showHomepage }, // path = /
     {name: 'user', fn: showUser },     // path = /:username
@@ -47,9 +51,6 @@ if (Meteor.isClient) {
   //   loadGithubProfileAndGists();
   // });
   
-  // Meteor.subscribe('userData', function(){
-  //   console.log('Got userData', Meteor.user());
-  // });
 
   Template.deck.content = function () {
     return getCurrentDeck();
@@ -75,6 +76,7 @@ if (Meteor.isClient) {
   Template.editor.value = function(){
     return getCurrentDeck();
   };
+
 }
 
 // DO magic... we need to eval the markdown, find h1, h2, and add section elements around them...
@@ -132,14 +134,56 @@ function findDeck (path, cb) {
 
   if (!deckId) {
     return console.log('Cannot find Deck ID', path);
-  }
 
+  }
   Session.set('deckId', deckId);
 }
 
 
 // Cannot call github raw from XHR. No Cors. Use api.
 function loadDeckFromGist (username, gistId) {
+  
+  github.gists.single(gistId, function (err, response) {
+    
+    // now go pull the markdown
+    var gistData = response.data;
+
+    var gistFiles = response.data.files;
+    
+    console.log('Got files', gistFiles);
+
+    var markdownFiles = filter(gistFiles, function (file) {
+
+      console.log('Filtering', file, (file.language == 'Markdown'));
+
+      return file.language == 'Markdown';
+    });
+
+    console.log('filtered files', markdownFiles);
+
+    // TOOD: WAT if we have more than 1 markdown file?
+
+    if (markdownFiles.length < 1) {
+      return console.log('Failed to find a markdown file for', username, gistId, response.data);
+    }
+
+    var markdownUrl = markdownFiles[0].raw_url;
+
+    Meteor.call('proxy', markdownUrl, function(error, data) {
+    // Meteor.http.get(markdownUrl, function (error, response) {
+      
+      if (error || !data){
+        return console.log('Error getting markdown', error, username, gistId, markdownUrl, data);
+      }
+
+      // Finally... Create a deck with the markdown and gist data.
+      Decks.insert({ _id: gistId, markdown: data, gistMarkdownUrl: markdownUrl });
+
+      console.log('Loaded deck from gist', username, gistId);
+    });
+
+  });
+
   // Meteor.http.get('https://gist.github.com/'+username+'/'+gistId+'/raw', function (err, response) {
   //   if(err) { 
   //     console.log('Failed to load gist', username, gistId);
@@ -211,7 +255,9 @@ function subscribeToCurrentDeck () {
     console.log('Subcribed to oneDeck', deckId, Decks.find().fetch());
 
     if (deckId && !Decks.findOne(deckId) ){
-      console.warn("TODO: load gist from github");
+      console.log('Loading gist from GitHub');
+
+      loadDeckFromGist('foo', deckId);
     }
   });
 }
@@ -280,4 +326,26 @@ if (Meteor.isServer) {
 
   //   return user;
   // });
+
+  Meteor.methods({ // ERG. Y U NO CORS.
+    proxy: function(url) {
+      // console.log('Proxying', url);
+      var response = Meteor.http.get(url);
+      // console.log('Proxied', response);
+      return response.content;
+    }
+  })
+
+}
+
+function filter ( obj, predicate) {
+  var result = [], key;
+
+  for (key in obj) {
+      if (obj.hasOwnProperty(key) && predicate(obj[key])) {
+          result.push(obj[key]);
+      }
+  }
+
+  return result;
 }
