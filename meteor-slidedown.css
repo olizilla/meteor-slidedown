@@ -4,8 +4,8 @@
 .deck .slide{
 	font-family: Futura;
 	font-size: 5em;
-	background: #EEE;
-	color: #222;
+	background-color: #333;
+	color: #EEE;
 }
 /* ---------------------- */
 
@@ -47,7 +47,7 @@ h1{
 	display: inline-block;
 }
 .edit .deck {
-	width: 300px;
+	width: 330px;
 	display: inline-block;
 	vertical-align: top;
 	margin-right: 20px;
@@ -65,7 +65,7 @@ h1{
 }
 .edit .slide h1 {
 	text-align: center;
-	font-size: 3em;
+	font-size: 2em;
 }
 .edit .slide img{
 	max-width: 100%;
@@ -74,9 +74,14 @@ h1{
 .show .src {
 	display: none;
 }
-.deck .slide {
-	background-size: 100% 100%;
+.deck .slide.image{
+	background-size: auto 100%;
+	background-repeat: no-repeat;
+	background-position: center center;
 }
 .slide.image p{
 	color:white;
+	background: rgba(0,0,0,0.4);
+	margin: 0 -10px;
+	padding: 0 10px;
 }
